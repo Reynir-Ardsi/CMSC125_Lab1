@@ -1,59 +1,84 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
 
-//cd implementation
-void cd(char *location){
-    if (location == NULL || strlen(location) == 0) {
-        printf("cd: path not specified\n");
-        return;
-    }
-    if (chdir(location) != 0) {
-        printf("Error changing directory to: %s\n", location);
-    }else{
-        printf("Changed directory to: %s\n", location);
+void cd(char *location) {
+    if (location == NULL) {
+        fprintf(stderr, "mysh: expected argument to \"cd\"\n");
+    } else if (chdir(location) != 0) {
+        perror("mysh");
     }
 }
 
-//pwd implementation
-void pwd(){
-    char cwd[1024]; //current working directory
-
+void pwd() {
+    char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("Current directory: %s\n", cwd);
+        printf("%s\n", cwd);
     } else {
-        printf("Error getting current directory\n");
+        perror("mysh");
     }
 }
 
-int main(){
-    char userInput[1024];
+void execute_external(char **args) {
+    pid_t pid = fork();
 
-    while (1){
-        printf("mysh> ");
-        
-        fgets(userInput, sizeof(userInput), stdin);
-        userInput[strcspn(userInput, "\n")] = 0; // Remove newline character
-
-        char *command = strtok(userInput, " ");
-        char *location = strtok(NULL, " ");
-
-        if (command == NULL) {
-            continue; // prevent crashing on empty input
+    if (pid == 0) {
+        if (execvp(args[0], args) == -1) {
+            perror("mysh");
         }
+        exit(EXIT_FAILURE);
+    } else if (pid < 0) {
+        perror("mysh");
+    } else {
+        int status;
+        waitpid(pid, &status, 0);
+        
+        if (WIFEXITED(status)) {
+            int exit_code = WEXITSTATUS(status);
+            if (exit_code != 0) {
+                fprintf(stderr, "[Process exited with status %d]\n", exit_code);
+            }
+        }
+    }
+}
 
-        if (strcmp(command, "exit") == 0){
+int main() {
+    char userInput[1024];
+    char *args[64];
+
+    while (1) {
+        printf("mysh> ");
+        fflush(stdout);
+
+        if (fgets(userInput, sizeof(userInput), stdin) == NULL) {
+            printf("\n");
             break;
         }
 
-        if(strcmp(command, "cd") == 0){
-            cd(location);
+        userInput[strcspn(userInput, "\n")] = 0;
 
-        } else if(strcmp(command, "pwd") == 0){
+        int i = 0;
+        args[i] = strtok(userInput, " ");
+        while (args[i] != NULL) {
+            args[++i] = strtok(NULL, " ");
+        }
+
+        if (args[0] == NULL) continue;
+
+        if (strcmp(args[0], "exit") == 0) {
+            while (waitpid(-1, NULL, WNOHANG) > 0);
+            break;
+        } 
+        else if (strcmp(args[0], "cd") == 0) {
+            cd(args[1]);
+        } 
+        else if (strcmp(args[0], "pwd") == 0) {
             pwd();
-
-        } else {
-            printf("Command not found: \"%s\"\n", userInput);
+        } 
+        else {
+            execute_external(args);
         }
     }
     return 0;
