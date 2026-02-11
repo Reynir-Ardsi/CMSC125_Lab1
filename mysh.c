@@ -8,8 +8,11 @@
 int main() {
     char userInput[1024];
     char *args[64];
+    int job_id = 0;
 
     while (1) {
+        while (waitpid(-1, NULL, WNOHANG) > 0);
+
         printf("mysh > ");
         fflush(stdout);
 
@@ -18,7 +21,7 @@ int main() {
             break;
         }
 
-        parse_input(userInput, args);
+        int is_bg = parse_input(userInput, args);
 
         if (args[0] == NULL)
             continue;
@@ -34,7 +37,18 @@ int main() {
             pwd();
         }
         else {
-            execute_external(args);
+            pid_t pid = execute_external(args, is_bg);
+            
+            if (is_bg && pid > 0) {
+                job_id++;
+                printf("[%d] Started background job : ", job_id);
+                
+                for (int j = 0; args[j] != NULL; j++) {
+                    printf("%s ", args[j]);
+                }
+                
+                printf("( PID : %d)\n", pid);
+            }
         }
     }
 

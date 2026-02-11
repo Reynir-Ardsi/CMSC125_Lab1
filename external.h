@@ -1,6 +1,8 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
 
-void execute_external(char **args);
+#include <sys/types.h>
+
+pid_t execute_external(char **args, int background);
 
 #endif

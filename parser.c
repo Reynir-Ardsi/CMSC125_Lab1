@@ -1,8 +1,7 @@
 #include <string.h>
 #include "parser.h"
 
-void parse_input(char *input, char **args) {
-    // Remove newline
+int parse_input(char *input, char **args) {
     input[strcspn(input, "\n")] = 0;
 
     int i = 0;
@@ -11,4 +10,11 @@ void parse_input(char *input, char **args) {
     while (args[i] != NULL) {
         args[++i] = strtok(NULL, " ");
     }
+
+    if (i > 0 && strcmp(args[i-1], "&") == 0) {
+        args[i-1] = NULL;
+        return 1;
+    }
+
+    return 0;
 }
