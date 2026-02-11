@@ -18,3 +18,4 @@ To compile the shell, use the following command:
 1. Interactive Command Loop
 2. Built-in Commands
 3. External Command Execution
+4. I/O Redirection
