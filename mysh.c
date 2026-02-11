@@ -27,7 +27,7 @@ int main() {
             continue;
 
         if (strcmp(args[0], "exit") == 0) {
-            while (waitpid(-1, NULL, WNOHANG) > 0);
+            while (wait(NULL) > 0);
             break;
         }
         else if (strcmp(args[0], "cd") == 0) {
@@ -36,17 +36,18 @@ int main() {
         else if (strcmp(args[0], "pwd") == 0) {
             pwd();
         }
+        else if (strcmp(args[0], "status") == 0) {
+            shell_status();
+        }
         else {
             pid_t pid = execute_external(args, is_bg);
             
             if (is_bg && pid > 0) {
                 job_id++;
                 printf("[%d] Started background job : ", job_id);
-                
                 for (int j = 0; args[j] != NULL; j++) {
                     printf("%s ", args[j]);
                 }
-                
                 printf("( PID : %d)\n", pid);
             }
         }

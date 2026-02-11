@@ -3,5 +3,6 @@
 
 void cd(char *location);
 void pwd();
+void shell_status();
 
 #endif

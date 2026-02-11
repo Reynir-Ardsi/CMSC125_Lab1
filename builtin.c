@@ -18,3 +18,9 @@ void pwd() {
         perror("mysh");
     }
 }
+
+void shell_status() {
+    printf("Shell Process Info:\n");
+    printf("Process ID (PID): %d\n", getpid());
+    printf("Parent PID (PPID): %d\n", getppid());
+}
