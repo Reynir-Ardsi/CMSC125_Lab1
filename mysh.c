@@ -47,11 +47,17 @@ int main() {
             
             if (cmd.background && pid > 0) {
                 job_id++;
-                printf("[%d] Started background job : ", job_id);
+                
+                char cmd_str[1024] = "";
                 for (int j = 0; cmd.args[j] != NULL; j++) {
-                    printf("%s ", cmd.args[j]);
+                    strcat(cmd_str, cmd.args[j]);
+                    if (cmd.args[j+1] != NULL) {
+                        strcat(cmd_str, " ");
+                    }
                 }
-                printf("( PID : %d)\n", pid);
+                
+                printf("[%d] Started : %s (PID : %d)\n", job_id, cmd_str, pid);
+                
             }
         }
     }

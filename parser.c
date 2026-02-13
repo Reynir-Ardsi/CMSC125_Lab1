@@ -23,7 +23,7 @@ void parse_input(char *input, Command *cmd) {
     char *token = strtok(input, " \t\r\n");
 
     if (token == NULL) {
-        return;
+        return; 
     }
 
     while (token != NULL) {
@@ -67,7 +67,6 @@ void parse_input(char *input, Command *cmd) {
                 break;
             }
         }
-        
         token = strtok(NULL, " \t\r\n");
     }
 }
