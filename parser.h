@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
+#include "structure.h"
 
-int parse_input(char *input, char **args);
+void parse_input(char *input, Command *cmd);
 
 #endif

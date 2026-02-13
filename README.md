@@ -24,3 +24,4 @@ To compile the shell, use the following command:
 3. External Command Execution
 4. I/O Redirection
 5. Background Execution
+6. Data Structures

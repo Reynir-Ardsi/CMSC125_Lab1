@@ -4,10 +4,10 @@
 #include "builtin.h"
 #include "external.h"
 #include "parser.h"
+#include "structure.h"
 
 int main() {
     char userInput[1024];
-    char *args[64];
     int job_id = 0;
 
     while (1) {
@@ -21,32 +21,33 @@ int main() {
             break;
         }
 
-        int is_bg = parse_input(userInput, args);
+        Command cmd;
+        parse_input(userInput, &cmd);
 
-        if (args[0] == NULL)
+        if (cmd.command == NULL)
             continue;
 
-        if (strcmp(args[0], "exit") == 0) {
+        if (strcmp(cmd.command, "exit") == 0) {
             while (wait(NULL) > 0);
             break;
         }
-        else if (strcmp(args[0], "cd") == 0) {
-            cd(args[1]);
+        else if (strcmp(cmd.command, "cd") == 0) {
+            cd(cmd.args[1]);
         }
-        else if (strcmp(args[0], "pwd") == 0) {
+        else if (strcmp(cmd.command, "pwd") == 0) {
             pwd();
         }
-        else if (strcmp(args[0], "status") == 0) {
+        else if (strcmp(cmd.command, "status") == 0) {
             shell_status();
         }
         else {
-            pid_t pid = execute_external(args, is_bg);
+            pid_t pid = execute_external(&cmd);
             
-            if (is_bg && pid > 0) {
+            if (cmd.background && pid > 0) {
                 job_id++;
                 printf("[%d] Started background job : ", job_id);
-                for (int j = 0; args[j] != NULL; j++) {
-                    printf("%s ", args[j]);
+                for (int j = 0; cmd.args[j] != NULL; j++) {
+                    printf("%s ", cmd.args[j]);
                 }
                 printf("( PID : %d)\n", pid);
             }
