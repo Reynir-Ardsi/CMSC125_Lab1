@@ -24,8 +24,9 @@ int main() {
         Command cmd;
         parse_input(userInput, &cmd);
 
-        if (cmd.command == NULL)
+        if (cmd.command == NULL) {
             continue;
+        }
 
         if (strcmp(cmd.command, "exit") == 0) {
             while (wait(NULL) > 0);
@@ -40,6 +41,7 @@ int main() {
         else if (strcmp(cmd.command, "status") == 0) {
             shell_status();
         }
+        
         else {
             pid_t pid = execute_external(&cmd);
             

@@ -17,8 +17,13 @@ pid_t execute_external(Command *cmd) {
                 perror("mysh: input file error");
                 exit(EXIT_FAILURE);
             }
-            dup2(fd, STDIN_FILENO);
-            close(fd);
+            if (dup2(fd, STDIN_FILENO) == -1) {
+                perror("mysh: dup2 input error");
+                exit(EXIT_FAILURE);
+            }
+            if (close(fd) == -1) {
+                perror("mysh: close input error");
+            }
         }
 
         if (cmd->output_file != NULL) {
@@ -28,33 +33,37 @@ pid_t execute_external(Command *cmd) {
                 perror("mysh: output file error");
                 exit(EXIT_FAILURE);
             }
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
+            if (dup2(fd, STDOUT_FILENO) == -1) {
+                perror("mysh: dup2 output error");
+                exit(EXIT_FAILURE);
+            }
+            if (close(fd) == -1) {
+                perror("mysh: close output error");
+            }
         }
 
         if (execvp(cmd->command, cmd->args) == -1) {
-            perror("mysh");
+            exit(127);
         }
-        exit(EXIT_FAILURE);
     }
     else if (pid < 0) {
-        perror("mysh");
+        perror("mysh: fork failed");
         return -1;
     }
     else {
         if (!cmd->background) {
             int status;
-            waitpid(pid, &status, 0);
+            if (waitpid(pid, &status, 0) == -1) {
+                perror("mysh: waitpid error");
+            }
 
-            if (WIFEXITED(status)) {
-                int exit_code = WEXITSTATUS(status);
-                if (exit_code != 0) {
-                    fprintf(stderr, "mysh: command not found: %s\n", cmd->command);
-                }
+            if (WIFEXITED(status) && WEXITSTATUS(status) == 127) {
+                fprintf(stderr, "mysh: command not found: %s\n", cmd->command);
             }
             return 0;
         } else {
             return pid;
         }
     }
+    return 0;
 }

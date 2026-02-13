@@ -6,7 +6,7 @@ void cd(char *location) {
     if (location == NULL) {
         fprintf(stderr, "mysh: expected argument to \"cd\"\n");
     } else if (chdir(location) != 0) {
-        perror("mysh");
+        perror("mysh: cd failed");
     }
 }
 
@@ -15,7 +15,7 @@ void pwd() {
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
         printf("%s\n", cwd);
     } else {
-        perror("mysh");
+        perror("mysh: getcwd failed");
     }
 }
 
