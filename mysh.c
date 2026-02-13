@@ -5,13 +5,16 @@
 #include "external.h"
 #include "parser.h"
 #include "structure.h"
+#include "jobs.h"
 
 int main() {
     char userInput[1024];
     int job_id = 0;
 
+    init_jobs();
+
     while (1) {
-        while (waitpid(-1, NULL, WNOHANG) > 0);
+        cleanup_background_jobs();
 
         printf("mysh > ");
         fflush(stdout);
@@ -58,6 +61,7 @@ int main() {
                 
                 printf("[%d] Started : %s (PID : %d)\n", job_id, cmd_str, pid);
                 
+                add_background_job(job_id, pid, cmd_str);
             }
         }
     }
