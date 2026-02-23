@@ -1,7 +1,7 @@
 # CMSC125_Laboratory1: Unix Shell
 
 # Complete Names of Group Members
-Rainier RJ E. Espinal
+Rainier RJ S. Espinal
 Matthew F. Simpas
 
 # Compilation and Usage Instructions
