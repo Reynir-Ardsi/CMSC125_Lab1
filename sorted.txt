@@ -1,0 +1,13 @@
+-rw-r--r-- 1 rainier rainier     0 Feb 11 20:44 unsorted.txt
+-rw-r--r-- 1 rainier rainier    81 Feb 11 20:33 external.h
+-rw-r--r-- 1 rainier rainier    82 Feb 11 20:33 builtin.h
+-rw-r--r-- 1 rainier rainier    87 Feb 11 20:33 parser.h
+-rw-r--r-- 1 rainier rainier   273 Feb 11 20:33 parser.c
+-rw-r--r-- 1 rainier rainier   402 Feb 11 20:33 builtin.c
+-rw-r--r-- 1 rainier rainier   625 Feb 11 20:44 output.txt
+-rw-r--r-- 1 rainier rainier   876 Feb 11 20:34 mysh.c
+-rw-r--r-- 1 rainier rainier  2819 Feb 11 20:34 external.c
+-rwxr-xr-x 1 rainier rainier 17160 Feb 11 20:43 mysh
+drwxr-xr-x 2 rainier rainier  4096 Feb 11 20:44 .
+drwxr-xr-x 3 rainier rainier  4096 Feb 11 20:38 ..
+total 60

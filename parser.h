@@ -4,5 +4,6 @@
 #include "structure.h"
 
 void parse_input(char *input, Command *cmd);
+void free_command(Command *cmd);
 
 #endif

@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include <stddef.h>
 #include <stdio.h>
 #include "parser.h"
@@ -30,7 +31,7 @@ void parse_input(char *input, Command *cmd) {
         if (strcmp(token, "<") == 0) {
             token = strtok(NULL, " \t\r\n");
             if (token != NULL) {
-                cmd->input_file = token;
+                cmd->input_file = strdup(token);
             } else {
                 fprintf(stderr, "mysh: expected filename after '<'\n");
             }
@@ -38,7 +39,7 @@ void parse_input(char *input, Command *cmd) {
         else if (strcmp(token, ">") == 0) {
             token = strtok(NULL, " \t\r\n");
             if (token != NULL) {
-                cmd->output_file = token;
+                cmd->output_file = strdup(token);
                 cmd->append = false;
             } else {
                 fprintf(stderr, "mysh: expected filename after '>'\n");
@@ -59,14 +60,29 @@ void parse_input(char *input, Command *cmd) {
         else {
             if (arg_count < 255) {
                 if (cmd->command == NULL) {
-                    cmd->command = token;
+                    cmd->command = strdup(token);
+                    cmd->args[arg_count++] = strdup(token);
+                } else {
+                    cmd->args[arg_count++] = strdup(token);
                 }
-                cmd->args[arg_count++] = token;
             } else {
                 fprintf(stderr, "mysh: warning: too many arguments, truncating\n");
                 break;
-            }
+            } //fixed dangling pointer issue by adding strdup to allocate memory for each argument
         }
         token = strtok(NULL, " \t\r\n");
     }
+}
+
+void free_command(Command *cmd) {
+    for (int i = 0; cmd->args[i] != NULL; i++) {
+        free(cmd->args[i]);
+        cmd->args[i] = NULL;
+    }
+    if (cmd->input_file) free(cmd->input_file);
+    if (cmd->output_file) free(cmd->output_file);
+
+    cmd->command = NULL;
+    cmd->input_file = NULL;
+    cmd->output_file = NULL;
 }
