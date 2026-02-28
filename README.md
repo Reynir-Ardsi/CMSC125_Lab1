@@ -35,9 +35,15 @@ The parser tokenizes user input using strtok while supporting:
 
 4. External Command Execution: Utilizes the Fork-Exec-Wait pattern to spawn child processes for system commands.
 
+![alt text](images/5c7a00d1-6305-4620-b053-4ecd2b26d2ed.jpg)
+
 5. I/O Redirection: Supports input, output truncate, and output append with strict file descriptor management to prevent leaks.
 
+![alt text](images/88af0ed5-cc26-41d6-bb57-d03b8787c63e.jpg)
+
 6. Background Process Management: Tracks active background jobs, prevents zombie processes using waitpid() with WNOHANG, and notifies the user upon job completion
+
+![alt text](images/14300815-5ba0-4bf4-90d7-95938c8e05b1.jpg)
 
 # Known Limitations or Bugs
 1. No Pipe Support: The shell does not currently support piping output between commands.
